@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  filezilla_server:
+    image: linuxserver/filezilla
+    volumes:
+      - ./ftp_server:/var/lib/filezilla
+    ports:
+      - 20:20
+      - 21:21
+      - 14147:14147
+    networks:
+      - ftp_network
+
+  ftp_client1:
+    image: linuxserver/filezilla
+    volumes:
+      - ./ftp_client1:/images
+    networks:
+      - ftp_network
+    
+  ftp_client2:
+    image: linuxserver/filezilla
+    networks:
+      - ftp_network
+
+networks:
+  ftp_network:
+    driver: bridge
