@@ -1,28 +1,46 @@
 version: '3'
 
 services:
-  filezilla_server:
-    image: linuxserver/filezilla
+  ftp_server:
+    image: webdevops/vsftp
+    container_name: server
+    environment:
+      - FTP_USER=alvgomez
+      - FTP_PASSWORD=passw
     volumes:
-      - ./ftp_server:/var/lib/filezilla
+      - ./ftp_server:/img_server
     ports:
-      - 20:20
-      - 21:21
-      - 14147:14147
+      - 20:20 #active mode ftp connection
+      - 21:21 #default control for ftp
     networks:
       - ftp_network
 
-  ftp_client1:
-    image: linuxserver/filezilla
+  ftp_client:
+    image: lscr.io/linuxserver/filezilla:latest
+    container_name: client
+    environment:
+      - CUSTOM_PORT=5000
     volumes:
-      - ./ftp_client1:/images
+      - ./ftp_client:/img_client
+    ports:
+      - 5000:5000
     networks:
       - ftp_network
-    
-  ftp_client2:
-    image: linuxserver/filezilla
+    restart: unless-stopped 
+
+  attacker:
+    image: lscr.io/linuxserver/wireshark:latest
+    container_name: attacker
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./attacker:/attacker
+    ports:
+      - 3000:3000
     networks:
       - ftp_network
+    restart: unless-stopped
 
 networks:
   ftp_network:
