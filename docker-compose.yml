@@ -16,7 +16,7 @@ services:
       - ftp_network
 
   ftp_client:
-    image: lscr.io/linuxserver/filezilla:latest
+    image: linuxserver/filezilla:latest
     container_name: client
     environment:
       - CUSTOM_PORT=5000
@@ -29,13 +29,11 @@ services:
     restart: unless-stopped 
 
   attacker:
-    image: lscr.io/linuxserver/wireshark:latest
+    build: .
     container_name: attacker
     cap_add:
       - NET_ADMIN
       - NET_RAW
-    volumes:
-      - ./attacker:/attacker
     ports:
       - 3000:3000
     networks:
